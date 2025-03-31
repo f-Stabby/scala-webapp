@@ -1,0 +1,71 @@
+@(todos: Seq[models.Todo])(implicit request: RequestHeader)
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Todo List</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                max-width: 800px;
+                margin: 0 auto;
+                padding: 20px;
+            }
+            .todo-item {
+                display: flex;
+                align-items: center;
+                padding: 10px;
+                border-bottom: 1px solid #eee;
+            }
+            .todo-item.completed {
+                text-decoration: line-through;
+                color: #888;
+            }
+            .todo-form {
+                margin-bottom: 20px;
+            }
+            input[type="text"] {
+                padding: 8px;
+                width: 300px;
+            }
+            button {
+                padding: 8px 16px;
+                background-color: #4CAF50;
+                color: white;
+                border: none;
+                cursor: pointer;
+            }
+            button.delete {
+                background-color: #f44336;
+                margin-left: 10px;
+            }
+            button.toggle {
+                background-color: #2196F3;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Todo List</h1>
+        
+        <div class="todo-form">
+            <form action="@routes.TodoController.create()" method="POST">
+                <input type="text" name="title" placeholder="Add a new todo..." required>
+                <button type="submit">Add</button>
+            </form>
+        </div>
+
+        <div class="todo-list">
+            @for(todo <- todos) {
+                <div class="todo-item @if(todo.completed) { completed }">
+                    <form action="@routes.TodoController.toggle(todo.id.get)" method="POST" style="display: inline;">
+                        <button type="submit" class="toggle">@if(todo.completed) { Undo } else { Complete }</button>
+                    </form>
+                    <span style="margin: 0 10px;">@todo.title</span>
+                    <form action="@routes.TodoController.delete(todo.id.get)" method="POST" style="display: inline;">
+                        <button type="submit" class="delete">Delete</button>
+                    </form>
+                </div>
+            }
+        </div>
+    </body>
+</html> 
